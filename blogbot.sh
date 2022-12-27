@@ -58,8 +58,8 @@ main() {
 	local topic
 	local destination
 
-	opt_add_arg "t" "topic"       "v" "www-commits"           "The topic to listen on"
-	opt_add_arg "d" "destination" "v" "/srv/www/m10k.eu/root" "The path to deploy content to"
+	opt_add_arg "t" "topic"       "v" "www-commits"        "The topic to listen on"
+	opt_add_arg "d" "destination" "v" "/srv/www/m10k/root" "The path to deploy content to"
 
 	if ! opt_parse "$@"; then
 		return 1
