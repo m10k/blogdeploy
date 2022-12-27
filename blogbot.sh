@@ -40,12 +40,14 @@ await_commits() {
 	else
 		while inst_running; do
 			local msg
+			local commit_msg
 
 			if ! msg=$(ipc_endpoint_recv "$endpoint" 5); then
 				continue
 			fi
+			commit_msg=$(ipc_msg_get_data "$msg")
 
-			handle_commit "$msg" "$destination"
+			handle_commit_msg "$commit_msg" "$destination"
 		done
 	fi
 
