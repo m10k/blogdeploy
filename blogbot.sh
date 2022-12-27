@@ -14,6 +14,10 @@ handle_commit_msg() {
 		return 1
 	fi
 
+	if [[ "$branch" == "unstable" ]]; then
+		destination+="/unstable"
+	fi
+
 	if ! err=$(./blogdeploy.sh --repository  "$repository" \
 	                           --branch      "$branch"     \
 	                           --destination "$destination"); then
