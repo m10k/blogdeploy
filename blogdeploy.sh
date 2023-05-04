@@ -42,6 +42,23 @@ override_jekyll_baseurl() {
 	return 0
 }
 
+append_to_jekyll_url() {
+	local contents="$1"
+	local append="$2"
+
+	local config
+	local query
+
+	config="$contents/_config.yml"
+	query=$(printf 's|^url:[ ]\\+"\\([^"]\\+\\)|url: "\\1%s|g' "$append")
+
+	if ! sed -i -e "$query" "$config"; then
+		return 1
+	fi
+
+	return 0
+}
+
 compile_contents() {
 	local contents="$1"
 	local branch="$2"
@@ -49,7 +66,7 @@ compile_contents() {
 	local err
 
 	if [[ "$branch" == "unstable" ]]; then
-		override_jekyll_baseurl "$contents" "/unstable"
+		append_to_jekyll_url "$contents" "/unstable"
 	fi
 
 	if ! err=$(cd "$contents" && jekyll build); then
