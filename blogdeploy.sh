@@ -27,10 +27,30 @@ clone_repository() {
 	return 0
 }
 
+override_jekyll_baseurl() {
+	local contents="$1"
+	local baseurl="$2"
+
+	local config
+
+	config="$contents/_config.yml"
+
+	if ! sed -i -e "s|^baseurl:.*|baseurl: \"$baseurl\"|g" "$config"; then
+		return 1
+	fi
+
+	return 0
+}
+
 compile_contents() {
 	local contents="$1"
+	local branch="$2"
 
 	local err
+
+	if [[ "$branch" == "unstable" ]]; then
+		override_jekyll_baseurl "$contents" "/unstable"
+	fi
 
 	if ! err=$(cd "$contents" && jekyll build); then
 		log_error "Could not compile sources in $contents"
@@ -56,8 +76,9 @@ deploy_contents() {
 compile_and_deploy_contents() {
 	local src="$1"
 	local dst="$2"
+	local branch="$3"
 
-	if ! compile_contents "$src"; then
+	if ! compile_contents "$src" "$branch"; then
 		log_error "Could not compile contents"
 		return 1
 	fi
@@ -85,7 +106,7 @@ blog_deploy() {
 		return 1
 	fi
 
-	if ! compile_and_deploy_contents "$clone" "$destination"; then
+	if ! compile_and_deploy_contents "$clone" "$destination" "$branch"; then
 		log_error "Could not deploy $clone to destination"
 		err=1
 	fi
