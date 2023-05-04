@@ -66,7 +66,7 @@ compile_contents() {
 	local err
 
 	if [[ "$branch" == "unstable" ]]; then
-		append_to_jekyll_url "$contents" "/unstable"
+		override_jekyll_baseurl "$contents" "/unstable"
 	fi
 
 	if ! err=$(cd "$contents" && jekyll build); then
